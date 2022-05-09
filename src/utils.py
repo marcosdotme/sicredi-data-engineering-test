@@ -4,7 +4,10 @@ from pathlib import Path
 from random import choice, randint, uniform
 from typing import Dict, List, Union
 
+import numpy
 import pandas
+import psycopg2
+import psycopg2.extensions
 from faker import Faker
 
 
@@ -336,3 +339,21 @@ def write_csv(data: List[Dict], output_file: str) -> None:
         sep = ';',
         index = False
     )
+
+
+def import_to_postgres(
+    connection: psycopg2.extensions.connection,
+    table: str,
+    data: pandas.DataFrame
+) -> None:
+
+    cursor = connection.cursor
+    n_columns = data.shape[1]
+    dataframe = data.replace({numpy.nan: None})
+    dataframe_tuple = dataframe.to_records(index = False).tolist()
+
+    values_placeholder = ','.join(['%s'] * n_columns)
+    args_str = ','.join(cursor.mogrify(f"({values_placeholder})", row).decode('utf-8') for row in dataframe_tuple)
+    cursor.execute(f"INSERT INTO {table} VALUES {args_str}")
+
+    connection.commit()
