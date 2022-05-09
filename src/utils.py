@@ -356,7 +356,7 @@ def import_to_postgres(
     data: pandas.DataFrame
 ) -> None:
 
-    cursor = connection.cursor
+    cursor = connection.cursor()
     n_columns = data.shape[1]
     dataframe = data.replace({numpy.nan: None})
     dataframe_tuple = dataframe.to_records(index = False).tolist()
