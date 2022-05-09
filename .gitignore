@@ -1,6 +1,9 @@
 # Users gitignore
 *.mustache
-
+src/data/associado/*
+src/data/cartao/*
+src/data/conta/*
+src/data/movimento/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode
