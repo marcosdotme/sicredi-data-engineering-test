@@ -87,7 +87,7 @@ class GenerateFakeData:
 
     Example usage
     -------------
-    >>> fake = GenerateFakeData(n = 5, id = 1)
+    >>> fake = GenerateFakeData(n = 1, id = 1)
     >>> print(fake.generate_associado_data())
     [
         {
@@ -120,7 +120,7 @@ class GenerateFakeData:
 
         Example usage
         -------------
-        >>> fake = GenerateFakeData(n = 5, id = 1)
+        >>> fake = GenerateFakeData(n = 1, id = 1)
         >>> print(fake.generate_associado_data())
         [
             {
@@ -164,7 +164,7 @@ class GenerateFakeData:
 
         Example usage
         -------------
-        >>> fake = GenerateFakeData(n = 5, id = 1)
+        >>> fake = GenerateFakeData(n = 1, id = 1)
         >>> print(fake.generate_conta_data())
         [
             {
@@ -207,7 +207,7 @@ class GenerateFakeData:
 
         Example usage
         -------------
-        >>> >>> fake = GenerateFakeData(n = 5, id = 1)
+        >>> >>> fake = GenerateFakeData(n = 1, id = 1)
         >>> print(fake.generate_cartao_data())
         [
             {
@@ -266,7 +266,7 @@ class GenerateFakeData:
 
         Example usage
         -------------
-        >>> fake = GenerateFakeData(n = 5, id = 1)
+        >>> fake = GenerateFakeData(n = 1, id = 1)
         >>> print(fake.generate_movimento_data())
         [
             {
