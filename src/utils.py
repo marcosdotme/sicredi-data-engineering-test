@@ -1,11 +1,11 @@
 import itertools
 from datetime import date
+from pathlib import Path
 from random import choice, randint, uniform
 from typing import Dict, List, Union
 
+import pandas
 from faker import Faker
-
-from utils import get_random_list_dict_item, query_list_dict
 
 
 def query_list_dict(list_dict: List[Dict], key: str, value: Union[str, int]) -> Dict:
@@ -314,3 +314,25 @@ class GenerateFakeData:
         self.movimento_data = fake_data
 
         return fake_data
+
+
+def write_csv(data: List[Dict], output_file: str) -> None:
+    """Writes data to CSV file.
+
+    Arguments
+    ---------
+        data `List[Dict]`: Data to be writted to CSV.
+        output_file `str`: Output CSV file.
+
+    Example usage
+    -------------
+    >>> my_data = [{'id': 1, 'nome': 'Jamie', 'sobrenome': 'Smith'}]
+    >>> write_csv(data = my_data, output_file = 'src/data/file.csv')
+    """
+
+    dataframe = pandas.DataFrame(data = data)
+    dataframe.to_csv(
+        Path(output_file),
+        sep = ';',
+        index = False
+    )
