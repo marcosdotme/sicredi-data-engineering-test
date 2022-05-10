@@ -7,7 +7,6 @@ from random import choice, randint, uniform
 from typing import Dict, List, Optional, Union
 
 import numpy
-import pandas
 import psycopg2
 import psycopg2.extensions
 import pyspark
