@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from datetime import date
 from pathlib import Path
 from random import choice, randint, uniform
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import numpy
 import pandas
@@ -11,6 +11,7 @@ import psycopg2
 import psycopg2.extensions
 from faker import Faker
 from pyspark.sql import SparkSession
+import pyspark
 
 
 def query_list_dict(list_dict: List[Dict], key: str, value: Union[str, int]) -> Dict:
@@ -365,26 +366,41 @@ def spark_session(app_name: str) -> SparkSession:
         spark.stop()
 
 
-def write_csv(data: List[Dict], output_file: str) -> None:
+def write_csv(data: List[Dict], output_dir: str, data_schema: Optional[pyspark.sql.types.StructType] = None) -> None:
     """Writes data to CSV file.
 
     Arguments
     ---------
         data `List[Dict]`: Data to be writted to CSV.
-        output_file `str`: Output CSV file.
+        output_dir `str`: Output directory to CSV file.
+
+    Keyword Arguments
+    -----------------
+        data_schema `Optional[pyspark.sql.types.StructType]`: PySpark Schema for the DataFrame. (default = None)
 
     Example usage
     -------------
     >>> my_data = [{'id': 1, 'nome': 'Jamie', 'sobrenome': 'Smith'}]
-    >>> write_csv(data = my_data, output_file = 'src/data/file.csv')
+    >>> write_csv(data = my_data, output_dir = 'src/data/')
     """
+    
+    with spark_session(app_name = 'app') as session:
+        if data_schema:
+            dataframe = session.createDataFrame(data, schema = data_schema)
 
-    dataframe = pandas.DataFrame(data = data)
-    dataframe.to_csv(
-        Path(output_file),
-        sep = ';',
-        index = False
-    )
+        if not data_schema:
+            dataframe = session.createDataFrame(data)
+
+        (
+            dataframe
+                .write
+                .csv(
+                    output_dir,
+                    sep = ';',
+                    header = True,
+                    mode = 'overwrite'
+                )
+        )
 
 
 def import_to_postgres(
