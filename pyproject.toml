@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "sicredi-data-engineer-test"
+version = "0.1.0"
+description = "Test for Data Engineer role at Sicredi."
+authors = ["Marcos Martins <contato@marcosmartins.me>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pyspark = "^3.2.1"
+psycopg2 = "^2.9.3"
+dynaconf = "^3.1.8"
+
+[tool.poetry.dev-dependencies]
+Faker = "^13.7.0"
+pandas = "^1.4.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
