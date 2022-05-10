@@ -1,0 +1,4 @@
+[production]
+HOST = 'localhost'
+PORT = 5432
+DATABASE = 'sicooperative'
