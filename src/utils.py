@@ -37,6 +37,7 @@ def query_list_dict(list_dict: List[Dict], key: str, value: Union[str, int]) -> 
     >>> query_list_dict(list_dict = my_list, key = 'id', value = 1)
     {'id': 1, 'name': 'Chris'}
     """
+
     result = [item for item in list_dict if item[key] == value]
     return result[0]
 
@@ -62,6 +63,7 @@ def get_random_list_dict_item(list_dict: List[Dict]) -> List[Dict]:
     >>> get_random_list_dict_item(list_dict = my_list)
     [{'id': 2, 'name': 'Josh'}]
     """
+
     if not all(isinstance(item, dict) for item in list_dict):
         raise TypeError(f'`list_dict` argument must be a list of dict.')
 
@@ -353,6 +355,7 @@ def spark_session(app_name: str) -> SparkSession:
             session.version
     '3.2.1'
     """
+
     spark = (
         SparkSession.builder
             .master('local')
@@ -412,12 +415,14 @@ def import_to_postgres(
 ) -> None:
 
     cursor = connection.cursor()
+
     n_columns = len(data.columns)
     dataframe = data.replace({numpy.nan: None})
     dataframe_tuple = dataframe.rdd.map(tuple).collect()
 
     values_placeholder = ','.join(['%s'] * n_columns)
     args_str = ','.join(cursor.mogrify(f"({values_placeholder})", row).decode('utf-8') for row in dataframe_tuple)
+    
     cursor.execute(f"INSERT INTO {table} VALUES {args_str}")
 
     connection.commit()
@@ -455,3 +460,18 @@ def find_files(dir: str, file_extension: Optional[str] = None) -> List[pathlib.P
         return list(
             Path(dir).glob('*')
         )
+
+
+def delete_file(file: pathlib.PosixPath) -> None:
+    """Deletes file.
+
+    Arguments
+    ---------
+        file `pathlib.PosixPath`: File to be deleted.
+
+    Example usage
+    -------------
+    >>> delete_file(file = 'src/data/file_1.csv')
+    """
+
+    Path(file).unlink(missing_ok = True)
