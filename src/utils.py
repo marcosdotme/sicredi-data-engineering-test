@@ -13,6 +13,7 @@ import psycopg2.extensions
 import pyspark
 from faker import Faker
 from pyspark.sql import SparkSession
+from pyspark.sql.dataframe import DataFrame
 
 
 def query_list_dict(list_dict: List[Dict], key: str, value: Union[str, int]) -> Dict:
@@ -407,13 +408,13 @@ def write_csv(data: List[Dict], output_dir: str, data_schema: Optional[pyspark.s
 def import_to_postgres(
     connection: psycopg2.extensions.connection,
     table: str,
-    data: pandas.DataFrame
+    data: DataFrame
 ) -> None:
 
     cursor = connection.cursor()
-    n_columns = data.shape[1]
+    n_columns = len(data.columns)
     dataframe = data.replace({numpy.nan: None})
-    dataframe_tuple = dataframe.to_records(index = False).tolist()
+    dataframe_tuple = dataframe.rdd.map(tuple).collect()
 
     values_placeholder = ','.join(['%s'] * n_columns)
     args_str = ','.join(cursor.mogrify(f"({values_placeholder})", row).decode('utf-8') for row in dataframe_tuple)
@@ -454,9 +455,3 @@ def find_files(dir: str, file_extension: Optional[str] = None) -> List[pathlib.P
         return list(
             Path(dir).glob('*')
         )
-
-
-files = find_files(
-        dir = 'src/data/associado',
-        file_extension = '.csv'
-    )
