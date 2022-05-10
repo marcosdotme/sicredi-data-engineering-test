@@ -1,4 +1,5 @@
 import itertools
+import pathlib
 from contextlib import contextmanager
 from datetime import date
 from pathlib import Path
@@ -9,9 +10,9 @@ import numpy
 import pandas
 import psycopg2
 import psycopg2.extensions
+import pyspark
 from faker import Faker
 from pyspark.sql import SparkSession
-import pyspark
 
 
 def query_list_dict(list_dict: List[Dict], key: str, value: Union[str, int]) -> Dict:
@@ -419,3 +420,43 @@ def import_to_postgres(
     cursor.execute(f"INSERT INTO {table} VALUES {args_str}")
 
     connection.commit()
+
+
+def find_files(dir: str, file_extension: Optional[str] = None) -> List[pathlib.PosixPath]:
+    """Find files in directory.
+
+    Arguments
+    ---------
+        dir `str`: Directory to search files.
+
+    Keyword Arguments
+    -----------------
+        file_extension `Optional[str]`: File extension to search. (default = None)
+
+    Returns
+    -------
+        `List[pathlib.PosixPath]`: Returns a list with the files.
+
+    Example usage
+    -------------
+    >>> find_files(dir = 'src/data/', file_extension = '.csv')
+    [PosixPath('src/data/file_1.csv'), PosixPath('src/data/file_2.csv')]
+    """
+
+    if file_extension:
+        extension = file_extension.split('.')[-1]
+
+        return list(
+            Path(dir).glob(f'*.{extension}')
+        )
+
+    if not file_extension:
+        return list(
+            Path(dir).glob('*')
+        )
+
+
+files = find_files(
+        dir = 'src/data/associado',
+        file_extension = '.csv'
+    )
