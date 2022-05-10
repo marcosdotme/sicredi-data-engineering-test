@@ -216,6 +216,7 @@ class GenerateFakeData:
                 'id': 1,
                 'num_cartao': '2227213156713788',
                 'nom_impresso': 'Jamie Smith',
+                'data_criacao': datetime.datetime(2001, 1, 12, 18, 36, 15),
                 'id_conta': 1,
                 'id_associado': 1
             }
@@ -252,6 +253,7 @@ class GenerateFakeData:
                 'id': _id,
                 'num_cartao': fake.credit_card_number(card_type = 'mastercard'),
                 'nom_impresso': f"{associado_data['nome']} {associado_data['sobrenome']}",
+                'data_criacao': fake.date_time(),
                 'id_conta': conta_data['id'],
                 'id_associado': conta_data['id_associado']
             }
