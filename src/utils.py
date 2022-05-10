@@ -1,4 +1,5 @@
 import itertools
+from contextlib import contextmanager
 from datetime import date
 from pathlib import Path
 from random import choice, randint, uniform
@@ -9,6 +10,7 @@ import pandas
 import psycopg2
 import psycopg2.extensions
 from faker import Faker
+from pyspark.sql import SparkSession
 
 
 def query_list_dict(list_dict: List[Dict], key: str, value: Union[str, int]) -> Dict:
@@ -326,6 +328,39 @@ class GenerateFakeData:
         self.movimento_data = fake_data
 
         return fake_data
+
+
+@contextmanager
+def spark_session(app_name: str) -> SparkSession:
+    """Safety creates a SparkSession.
+
+    Arguments
+    ---------
+        app_name `str`: The name for the SparkSession.
+
+    Returns
+    -------
+        `SparkSession`: Returns a SparkSession object.
+
+    Example usage
+    -------------
+    >>> with spark_session(app_name = 'my_app') as session:
+            session.version
+    '3.2.1'
+    """
+    spark = (
+        SparkSession.builder
+            .master('local')
+            .appName(app_name)
+            .config('spark.jars', Path().cwd() / 'src/drivers/postgresql-42.3.5.jar')
+            .getOrCreate()
+    )
+
+    try:
+        yield spark
+
+    finally:
+        spark.stop()
 
 
 def write_csv(data: List[Dict], output_file: str) -> None:
