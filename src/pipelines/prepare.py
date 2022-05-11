@@ -1,10 +1,9 @@
-from pyspark.sql.types import (FloatType, IntegerType, StringType,
-                               StructField, StructType, TimestampType)
+from pyspark.sql.types import (FloatType, IntegerType, StringType, StructField,
+                               StructType, TimestampType)
 from src.database.connection import connect_postgres
 from src.database.models.datalake.create import create_datalake
-from src.utils import (GenerateFakeData, delete_file, find_files,
+from src.utils import (GenerateFakeData, delete_file, drop_table, find_files,
                        import_to_postgres, spark_session, write_csv)
-
 
 
 def prepare_environment() -> None:
@@ -19,6 +18,33 @@ def prepare_environment() -> None:
     -------------
     >>> prepare_environment()
     """
+
+    # Drops table if exists
+    with connect_postgres(env = 'production') as connection:
+        drop_table(
+            connection = connection,
+            schema = 'datalake',
+            table = 'movimento'
+        )
+
+        drop_table(
+            connection = connection,
+            schema = 'datalake',
+            table = 'cartao'
+        )
+
+        drop_table(
+            connection = connection,
+            schema = 'datalake',
+            table = 'conta'
+        )
+
+        drop_table(
+            connection = connection,
+            schema = 'datalake',
+            table = 'associado'
+        )
+
 
     # Creates 'datalake' schema and tables on Postgres
     create_datalake(env = 'production')
