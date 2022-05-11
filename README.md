@@ -13,12 +13,33 @@ This is a simple but **well documented and architected** data pipeline project f
 ## To run tests:
 
 ```shell
-cd sicredi-data-engineer-test
+git clone -b main git@github.com:marcosdotme/sicredi-data-engineering-test.git
+```
+
+```shell
+cd sicredi-data-engineering-test
+```
+
+```shell
+poetry install
+```
+
+```shell
+poetry shell
+```
+
+```shell
+docker-compose up -d database
 ```
 
 ```shell
 python -m pytest -v --cov=src
 ```
+
+```shell
+docker-compose down
+```
+
 
 ## To run the project:
 
@@ -27,7 +48,7 @@ git clone -b main git@github.com:marcosdotme/sicredi-data-engineering-test.git
 ```
 
 ```shell
-cd sicredi-data-engineer-test
+cd sicredi-data-engineering-test
 ```
 
 ```shell
