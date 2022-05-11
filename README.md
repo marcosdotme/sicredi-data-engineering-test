@@ -10,6 +10,15 @@ This is a simple but **well documented and architected** data pipeline project f
 * Poetry: https://python-poetry.org/docs/
 * Python >= 3.10: https://www.python.org/downloads/
 
+## To run tests:
+
+```shell
+cd sicredi-data-engineer-test
+```
+
+```shell
+python -m pytest -v --cov=src
+```
 
 ## To run the project:
 
