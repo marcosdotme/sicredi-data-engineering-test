@@ -236,7 +236,7 @@ class GenerateFakeData:
             self.conta_data = self.generate_conta_data()
 
         if not self.associado_data:
-            self.conta_data = self.generate_associado_data()
+            self.associado_data = self.generate_associado_data()
 
         for _ in range(self.n):
             _id = next(id)
