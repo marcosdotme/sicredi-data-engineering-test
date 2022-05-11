@@ -499,3 +499,27 @@ def export_dynaconf_custom_settings(
 
     environ.setdefault('SETTINGS_FILE_FOR_DYNACONF', secrets_toml)
     environ.setdefault('SECRETS_FOR_DYNACONF', settings_toml)
+
+
+def drop_table(
+    connection: psycopg2.extensions.connection,
+    schema: str,
+    table: str
+) -> None:
+    """Drops table if exists in schema.
+
+    Arguments
+    ---------
+        connection `psycopg2.extensions.connection`: Connection to database.
+        schema `str`: Database schema name.
+        table `str`: Table name.
+
+    Example usage
+    -------------
+    >>> drop_table(connection = connection, schema = 'db_schema', table = 'customers')
+    """
+    
+    cursor = connection.cursor()
+    cursor.execute(f"DROP TABLE IF EXISTS {schema}.{table}")
+
+    connection.commit()
