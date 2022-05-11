@@ -413,6 +413,18 @@ def import_to_postgres(
     table: str,
     data: DataFrame
 ) -> None:
+    """Imports PySpark Dataframe to Postgres table.
+
+    Arguments
+    ---------
+        connection `psycopg2.extensions.connection`: Connection to database.
+        table `str`: Table name to import the data.
+        data `DataFrame`: PySpark dataframe.
+
+    Example usage
+    -------------
+    >>> import_to_postgres(connection = connection, table = 'customers', data = 'pyspark_dataframe')
+    """
 
     cursor = connection.cursor()
 
