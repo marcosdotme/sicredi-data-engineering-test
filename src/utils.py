@@ -1,4 +1,5 @@
 import itertools
+from os import environ
 import pathlib
 from contextlib import contextmanager
 from datetime import date
@@ -474,3 +475,27 @@ def delete_file(file: pathlib.PosixPath) -> None:
     """
 
     Path(file).unlink(missing_ok = True)
+
+
+def export_dynaconf_custom_settings(
+    secrets_toml: str = '.secrets/.secrets.toml',
+    settings_toml: str = '.secrets/settings.toml'
+) -> None:
+    """Exports custom files to Dynaconf.
+    
+    By exporting values to `SETTINGS_FILE_FOR_DYNACONF`
+    and `SECRETS_FOR_DYNACONF`, Dynaconf can read an we can
+    use this values as normal.
+
+    Keyword Arguments
+    -----------------
+        secrets_toml `str`: Path to `.secrets.toml` file. (default = '.secrets/.secrets.toml')
+        settings_toml `str`: Path to `settings.toml` file. (default = '.secrets/settings.toml')
+
+    Example usage
+    -------------
+    >>> export_dynaconf_custom_settings()
+    """
+
+    environ.setdefault('SETTINGS_FILE_FOR_DYNACONF', secrets_toml)
+    environ.setdefault('SECRETS_FOR_DYNACONF', settings_toml)

@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import psycopg2
 import psycopg2.extensions
 from dynaconf import settings
+from src.utils import export_dynaconf_custom_settings
 
 
 @contextmanager
@@ -26,6 +27,7 @@ def connect_postgres(env: str = 'development') -> psycopg2.extensions.connection
     ('PostgreSQL 14.2 (Debian 14.2-1.pgdg110+1)
     """
 
+    export_dynaconf_custom_settings()
     env_settings = settings.from_env(env)
 
     connection = (
