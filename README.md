@@ -6,7 +6,7 @@ This is a simple but **well documented and architected** data pipeline project f
 ## Requirements:
 
 * Docker: https://docs.docker.com/engine/install/ubuntu/#installation-methods
-* Docker-compose: https://docs.docker.com/compose/install/
+* Docker-compose: https://docs.docker.com/compose/install/ (If using Linux, go to **Linux Standalone binary** tab)
 * Poetry: https://python-poetry.org/docs/
 * Python >=3.10: https://www.python.org/downloads/
 
