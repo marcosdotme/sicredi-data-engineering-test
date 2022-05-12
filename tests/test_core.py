@@ -109,15 +109,15 @@ def test_check_if_GenerateFakeData_n_equals_1_generate_movimento_data_returns_li
 
 def test_check_if_spark_session_return_valid_SparkSession():
     with spark_session(app_name = 'my_app') as session:
-        result = session.version
+        spark_version = session.version
 
-        if result:
-            response = True
+        if spark_version:
+            result = True
 
-        if not result:
-            response = False
+        if not spark_version:
+            result = False
 
-        assert response == True
+        assert result == True
 
 
 def test_check_if_find_files_can_find_all_files_in_directory():
@@ -206,13 +206,13 @@ def test_check_if_connect_postgres_return_valid_connection():
         try:
             cursor = connection.cursor()
             cursor.execute('SELECT version()')
-            result = cursor.fetchone()
+            postgres_version = cursor.fetchone()
 
-            response = True
+            result = True
         except:
-            response = False
+            result = False
 
-        assert response == True
+        assert result == True
 
 
 def test_if_user_etl_successfully_executes_and_writes_the_csv_file():
