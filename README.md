@@ -8,7 +8,7 @@ This is a simple but **well documented and architected** data pipeline project f
 * Docker: https://docs.docker.com/engine/install/ubuntu/#installation-methods
 * Docker-compose: https://docs.docker.com/compose/install/
 * Poetry: https://python-poetry.org/docs/
-* Python >= 3.10: https://www.python.org/downloads/
+* Python >=3.10: https://www.python.org/downloads/
 
 ## To run tests:
 
@@ -39,6 +39,8 @@ python -m pytest -v --cov=src
 ```shell
 docker-compose down
 ```
+<img src='./tests/coverage.png' alt='Percentage of code covered by tests' width="500"/>
+
 
 
 ## To run the project:
