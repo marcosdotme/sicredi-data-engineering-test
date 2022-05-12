@@ -7,6 +7,7 @@ from src.database.connection import connect_postgres
 from src.utils import (GenerateFakeData, delete_file, find_files,
                        get_random_list_dict_item, query_list_dict,
                        spark_session)
+from src.pipelines.user_etl import user_etl
 
 
 def test_check_if_query_list_dict_function_returns_dict():
@@ -212,3 +213,16 @@ def test_check_if_connect_postgres_return_valid_connection():
             response = False
 
         assert response == True
+
+
+def test_if_user_etl_successfully_executes_and_writes_the_csv_file():
+    with TemporaryDirectory() as temp_dir:
+
+        user_etl(output_dir = temp_dir)
+
+        files = find_files(
+            dir = temp_dir,
+            file_extension = '.csv'
+        )
+
+        assert len(files) > 0
