@@ -39,8 +39,9 @@ python -m pytest -v --cov=src
 ```shell
 docker-compose down
 ```
-<img src='./tests/coverage.png' alt='Percentage of code covered by tests' width="500"/>
 
+## Percent of code covered by tests
+<img src='./tests/coverage.png' alt='Percentage of code covered by tests' width="500"/>
 
 
 ## To run the project:
