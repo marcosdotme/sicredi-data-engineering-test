@@ -1,6 +1,11 @@
+from pathlib import Path
+from random import randrange
+from tempfile import TemporaryDirectory
+
 from src.database.connection import connect_postgres
-from src.utils import (GenerateFakeData, get_random_list_dict_item,
-                       query_list_dict, spark_session)
+from src.utils import (GenerateFakeData, delete_file, find_files,
+                       get_random_list_dict_item, query_list_dict,
+                       spark_session)
 
 
 def test_check_if_query_list_dict_function_returns_dict():
@@ -116,6 +121,87 @@ def test_check_if_spark_session_return_valid_SparkSession():
             response = False
 
         assert response == True
+
+
+def test_check_if_find_files_can_find_all_files_in_directory():
+    files_to_find = [
+        'file_1.csv',
+        'file_2.txt',
+        'file_3.json',
+        'file_4.csv',
+        'file_5.txt',
+        'file_6.json',
+        'file_7.csv'
+    ]
+
+    with TemporaryDirectory() as temp_dir:
+        for file in files_to_find:
+            file_in_temp_dir = Path(temp_dir) / file
+            
+            with file_in_temp_dir.open(mode = 'w') as file:
+                file.write('This is a temporary file.')
+
+        files_founded = find_files(
+            dir = temp_dir
+        )
+        
+        assert len(files_founded) == 7
+
+
+def test_check_if_find_files_can_find_all_csv_files_in_directory():
+    files_to_find = [
+        'file_1.csv',
+        'file_2.txt',
+        'file_3.json',
+        'file_4.csv',
+        'file_5.txt',
+        'file_6.json',
+        'file_7.csv'
+    ]
+
+    with TemporaryDirectory() as temp_dir:
+        for file in files_to_find:
+            file_in_temp_dir = Path(temp_dir) / file
+            
+            with file_in_temp_dir.open(mode = 'w') as file:
+                file.write('This is a temporary file.')
+
+        files_founded = find_files(
+            dir = temp_dir,
+            file_extension = '.csv'
+        )
+        
+        assert len(files_founded) == 3
+
+
+def test_check_if_delete_file_deletes_file():
+    files_to_create = [
+        'file_1.csv',
+        'file_2.txt',
+        'file_3.json',
+        'file_4.csv',
+        'file_5.txt',
+        'file_6.json',
+        'file_7.csv'
+    ]
+
+    with TemporaryDirectory() as temp_dir:
+        for file in files_to_create:
+            file_in_temp_dir = Path(temp_dir) / file
+            
+            with file_in_temp_dir.open(mode = 'w') as file:
+                file.write('This is a temporary file.')
+
+        files_founded = find_files(
+            dir = temp_dir
+        )
+
+        random_file_index = randrange(0, len(files_to_create))
+        file_to_delete = files_founded[random_file_index]
+
+        delete_file(file = file_to_delete)
+
+        assert file_to_delete.exists() == False
 
 
 def test_check_if_connect_postgres_return_valid_connection():
