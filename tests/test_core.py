@@ -3,11 +3,13 @@ from random import randrange
 from tempfile import TemporaryDirectory
 
 import pytest
+from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 from src.database.connection import connect_postgres
+from src.pipelines.prepare import prepare_environment
+from src.pipelines.user_etl import user_etl
 from src.utils import (GenerateFakeData, delete_file, find_files,
                        get_random_list_dict_item, query_list_dict,
-                       spark_session)
-from src.pipelines.user_etl import user_etl
+                       spark_session, write_csv)
 
 
 def test_check_if_query_list_dict_function_returns_dict():
@@ -120,6 +122,48 @@ def test_check_if_spark_session_return_valid_SparkSession():
         assert result == True
 
 
+def test_check_if_write_csv_can_writes_csv_file_with_schema_option():
+    my_data = [{'id': 1, 'nome': 'Jamie', 'sobrenome': 'Smith'}]
+    data_schema = StructType(
+        [
+            StructField(name = 'id', dataType = IntegerType()),
+            StructField(name = 'nome', dataType = StringType()),
+            StructField(name = 'sobrenome', dataType = StringType())
+        ]
+    )
+
+    with TemporaryDirectory() as temp_dir:
+        write_csv(
+            data = my_data,
+            output_dir = temp_dir,
+            data_schema = data_schema
+        )
+
+        files = find_files(
+            dir = temp_dir,
+            file_extension = '.csv'
+        )
+
+        assert len(files) > 0
+
+
+def test_check_if_write_csv_can_writes_csv_file_without_schema_option():
+    my_data = [{'id': 1, 'nome': 'Jamie', 'sobrenome': 'Smith'}]
+
+    with TemporaryDirectory() as temp_dir:
+        write_csv(
+            data = my_data,
+            output_dir = temp_dir
+        )
+
+        files = find_files(
+            dir = temp_dir,
+            file_extension = '.csv'
+        )
+
+        assert len(files) > 0
+
+
 def test_check_if_find_files_can_find_all_files_in_directory():
     files_to_find = [
         'file_1.csv',
@@ -226,3 +270,178 @@ def test_if_user_etl_successfully_executes_and_writes_the_csv_file():
         )
 
         assert len(files) > 0
+
+
+def test_if_prepare_environment_successfully_creates_schema():
+    prepare_environment()
+
+    query = """
+    SELECT
+        EXISTS (
+                    SELECT
+                        schema_name
+                    FROM
+                        information_schema.schemata
+                    WHERE
+                        schema_name = 'datalake'
+                );
+    """
+
+    with connect_postgres(env = 'production') as connection:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        result = cursor.fetchone()[0]
+
+        assert result == True
+
+
+def test_if_prepare_environment_successfully_creates_associado_table():
+    query = """
+    SELECT
+        EXISTS (
+                    SELECT
+                        table_name
+                    FROM
+                        information_schema.tables
+                    WHERE
+                        table_schema = 'datalake'
+                        AND table_name = 'associado'
+                );
+    """
+    
+    with connect_postgres(env = 'production') as connection:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        result = cursor.fetchone()[0]
+
+        assert result == True
+
+
+def test_if_prepare_environment_successfully_creates_conta_table():
+    query = """
+    SELECT
+        EXISTS (
+                    SELECT
+                        table_name
+                    FROM
+                        information_schema.tables
+                    WHERE
+                        table_schema = 'datalake'
+                        AND table_name = 'conta'
+                );
+    """
+    
+    with connect_postgres(env = 'production') as connection:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        result = cursor.fetchone()[0]
+
+        assert result == True
+
+
+def test_if_prepare_environment_successfully_creates_cartao_table():
+    query = """
+    SELECT
+        EXISTS (
+                    SELECT
+                        table_name
+                    FROM
+                        information_schema.tables
+                    WHERE
+                        table_schema = 'datalake'
+                        AND table_name = 'cartao'
+                );
+    """
+    
+    with connect_postgres(env = 'production') as connection:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        result = cursor.fetchone()[0]
+
+        assert result == True
+
+
+def test_if_prepare_environment_successfully_creates_movimento_table():
+    query = """
+    SELECT
+        EXISTS (
+                    SELECT
+                        table_name
+                    FROM
+                        information_schema.tables
+                    WHERE
+                        table_schema = 'datalake'
+                        AND table_name = 'movimento'
+                );
+    """
+    
+    with connect_postgres(env = 'production') as connection:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        result = cursor.fetchone()[0]
+
+        assert result == True
+
+
+def test_if_prepare_environment_successfully_populates_associado_table():
+    query = """
+    SELECT
+        COUNT(*)
+    FROM
+        datalake.associado
+    """
+    
+    with connect_postgres(env = 'production') as connection:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        count = cursor.fetchone()[0]
+
+        assert count > 0
+
+
+def test_if_prepare_environment_successfully_populates_conta_table():
+    query = """
+    SELECT
+        COUNT(*)
+    FROM
+        datalake.conta
+    """
+    
+    with connect_postgres(env = 'production') as connection:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        count = cursor.fetchone()[0]
+
+        assert count > 0
+
+
+def test_if_prepare_environment_successfully_populates_cartao_table():
+    query = """
+    SELECT
+        COUNT(*)
+    FROM
+        datalake.cartao
+    """
+    
+    with connect_postgres(env = 'production') as connection:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        count = cursor.fetchone()[0]
+
+        assert count > 0
+
+
+def test_if_prepare_environment_successfully_populates_movimento_table():
+    query = """
+    SELECT
+        COUNT(*)
+    FROM
+        datalake.movimento
+    """
+    
+    with connect_postgres(env = 'production') as connection:
+        cursor = connection.cursor()
+        cursor.execute(query)
+        count = cursor.fetchone()[0]
+
+        assert count > 0
