@@ -2,6 +2,7 @@ from pathlib import Path
 from random import randrange
 from tempfile import TemporaryDirectory
 
+import pytest
 from src.database.connection import connect_postgres
 from src.utils import (GenerateFakeData, delete_file, find_files,
                        get_random_list_dict_item, query_list_dict,
@@ -43,15 +44,10 @@ def test_check_if_get_random_list_dict_item_function_returns_dict_inside_list():
 def test_check_if_get_random_list_dict_item_function_returns_TypeError_exception():
     my_dict = [{'id': 1, 'name': 'a'}, (1, 'b')]
 
-    try:
+    with pytest.raises(TypeError):
         result = get_random_list_dict_item(
             list_dict = my_dict
         )
-        response = False
-    except TypeError:
-        response = True
-
-    assert response == True
 
 
 def test_check_if_GenerateFakeData_generate_associado_data_returns_list():
