@@ -1,5 +1,6 @@
 from dynaconf import settings
 from src.utils import export_dynaconf_custom_settings, spark_session
+from src.pipelines.prepare import prepare_environment
 
 
 def user_etl(output_dir: str) -> None:
@@ -13,6 +14,8 @@ def user_etl(output_dir: str) -> None:
     -------------
     >>> user_etl(output_dir = 'src/data/')
     """
+
+    prepare_environment()
 
     with spark_session(app_name = 'User_ETL') as session:
         export_dynaconf_custom_settings()
